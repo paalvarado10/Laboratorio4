@@ -31,7 +31,17 @@ public class ClientThread extends Thread{
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}catch (IOException e) {
-				e.printStackTrace();
+				
+				try {
+					client.close();
+					entry.close();
+					exit.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				break;
 			}
 		} while(true);
 	}
@@ -43,7 +53,7 @@ public class ClientThread extends Thread{
 		System.out.println(msg);
 	}
 	
-	private void sendData(String msg) throws IOException{
+	public void sendData(String msg) throws IOException{
 		exit.writeObject(msg);
 	}
 
@@ -51,5 +61,16 @@ public class ClientThread extends Thread{
 		exit = new ObjectOutputStream(client.getOutputStream());
 		exit.flush();
 		entry = new ObjectInputStream(client.getInputStream());
+	}
+	
+	public void closeConnection() {
+		try {
+			sendData("close connection");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Conection Closed");
+	
 	}
 }
