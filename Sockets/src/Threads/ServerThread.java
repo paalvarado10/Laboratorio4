@@ -10,7 +10,7 @@ public class ServerThread extends Thread {
 
 	private ServerSocket server;
 	private Socket conection;
-	static boolean active = true;
+	
 	private ObjectInputStream entry;
 	private ObjectOutputStream exit;
 	
@@ -27,12 +27,10 @@ public class ServerThread extends Thread {
 		do {
 			try {
 				processConection();
-			} catch (ClassNotFoundException e)  {
+			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace(); 
-			} catch  (IOException e) {
-				e.printStackTrace();
 			}
-		}while(active);
+		}while(true);
 		
 	}
 	private void processConection() throws ClassNotFoundException ,IOException{
@@ -43,13 +41,6 @@ public class ServerThread extends Thread {
 		if(msg.compareTo("start conection")==0) {
 			System.out.println("conection established with "+conection.getInetAddress().getHostName());
 			sendData("Server accepted your connection");
-		}
-		if (msg.equals("close connection")) {
-			active = false;
-			server.close();
-			conection.close();
-			entry.close();
-			exit.close();
 		}
 	}
 	private void sendData(String  msg) throws IOException{
